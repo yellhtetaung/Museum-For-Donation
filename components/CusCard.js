@@ -1,15 +1,22 @@
 import React from "react";
 import { StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Text } from "@react-native-material/core";
+import { useNavigation } from "@react-navigation/native";
 
 const CusCard = ({ data }) => {
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity style={styles.cardContainer} activeOpacity={0.6}>
+    <TouchableOpacity
+      style={styles.cardContainer}
+      activeOpacity={0.6}
+      onPress={() => navigation.navigate("Details", { data })}
+    >
       <Image source={data.image} style={styles.cardImage} />
       <Text
         variant="h6"
         style={{
-          fontFamily: "semibold",
+          fontFamily: "bold",
           paddingVertical: 5,
         }}
       >

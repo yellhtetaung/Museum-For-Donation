@@ -1,12 +1,13 @@
 import React, { useState, useRef } from "react";
+import { StyleSheet, Image, Dimensions, Animated } from "react-native";
 import {
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  Animated,
-} from "react-native";
-import { Flex, HStack, Stack, Text, Wrap } from "@react-native-material/core";
+  AppBar,
+  Flex,
+  IconButton,
+  Stack,
+  Text,
+  Wrap,
+} from "@react-native-material/core";
 import Icons from "@expo/vector-icons/Ionicons";
 import MuseumLists from "../components/MuseumLists";
 import Pagination from "../components/Pagination";
@@ -41,36 +42,37 @@ const Home = ({ museum }) => {
 
   return (
     <Flex fill>
-      <HStack
-        h={70}
-        justify="space-between"
-        items="center"
-        ph={20}
-        style={{
-          elevation: elevations,
-          backgroundColor: "#eee",
-        }}
-      >
-        <Text
-          variant="h4"
-          style={{
-            width: "70%",
-            fontFamily: "yellowtail",
-            color: "#0369a1",
-            textTransform: "uppercase",
-            marginLeft: 10,
-          }}
-        >
-          Museum
-        </Text>
-
-        <TouchableOpacity style={styles.searchButton} activeOpacity={0.6}>
-          <Icons name="search" size={20} />
-        </TouchableOpacity>
-      </HStack>
+      <AppBar
+        color="#FFF"
+        title={() => (
+          <Text
+            variant="h3"
+            style={{
+              fontFamily: "yellowtail",
+              color: "#38bdf8",
+            }}
+          >
+            Museum
+          </Text>
+        )}
+        trailing={(props) => (
+          <IconButton
+            style={styles.searchButton}
+            icon={(props) => (
+              <Icons
+                name="qr-code-sharp"
+                size={props.size}
+                color={props.color}
+              />
+            )}
+            {...props}
+          />
+        )}
+        style={{ padding: 10, elevation: elevations }}
+      />
 
       <Animated.ScrollView
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         style={{ flex: 1, paddingHorizontal: 20 }}
         onScroll={(e) => shadowHandel(e)}
       >
@@ -180,8 +182,6 @@ const styles = StyleSheet.create({
   searchButton: {
     backgroundColor: "#cbd5e1",
     borderRadius: 15,
-
-    padding: 15,
   },
 });
 

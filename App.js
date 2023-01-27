@@ -7,6 +7,7 @@ import { data } from "./data";
 
 import GetStarted from "./screens/GetStarted";
 import BottomTabs from "./components/BottomTabs";
+import Details from "./screens/Details";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -37,7 +38,16 @@ export default function App() {
         initialRouteName="GetStarted"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="GetStarted" component={GetStarted} />
+        <Stack.Screen
+          name="GetStarted"
+          component={GetStarted}
+          options={{ animation: "fade" }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={Details}
+          options={{ animation: "slide_from_bottom" }}
+        />
         <Stack.Screen
           name="Museum"
           children={() => <BottomTabs museum={museum} />}
