@@ -1,9 +1,17 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useColorScheme } from "react-native";
+import {
+  darkTheme,
+  defaultTheme,
+  Provider,
+  ThemeProvider,
+} from "@react-native-material/core";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { data } from "./data";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import GetStarted from "./screens/GetStarted";
 import BottomTabs from "./components/BottomTabs";
@@ -11,7 +19,35 @@ import Details from "./screens/Details";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+
   const [museum, setMuseum] = useState([...data]);
+
+  const [theme, setTheme] = useState();
+  const colorScheme = useColorScheme();
+
+  const setColor = async () => {
+    await AsyncStorage.setItem("theme", "System");
+  };
+
+  useEffect(() => {
+    AsyncStorage.getItem("theme").then(async (value) => {
+      if (value === null) {
+        setColor();
+      }
+      if (value === "System") {
+        await AsyncStorage.setItem("themeCheck", "System");
+        if (colorScheme === "light") {
+          setTheme(defaultTheme);
+        } else if (colorScheme === "dark") {
+          setTheme(darkTheme);
+        }
+      } else if (value === "light") {
+        setTheme(defaultTheme);
+      } else if (value === "dark") {
+        setTheme(darkTheme);
+      }
+    });
+  }, [colorScheme]);
 
   const [fontsLoaded] = useFonts({
     medium: require("./assets/fonts/RobotoSlab-Medium.ttf"),
@@ -33,26 +69,35 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="GetStarted"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen
-          name="GetStarted"
-          component={GetStarted}
-          options={{ animation: "fade" }}
-        />
-        <Stack.Screen
-          name="Details"
-          component={Details}
-          options={{ animation: "slide_from_bottom" }}
-        />
-        <Stack.Screen
-          name="Museum"
-          children={() => <BottomTabs museum={museum} />}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider theme={theme}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="GetStarted"
+          screenOptions={{ headerShown: false }}
+        >
+          <Stack.Screen
+            name="GetStarted"
+            component={GetStarted}
+            options={{ animation: "fade" }}
+          />
+          <Stack.Screen
+            name="Details"
+            component={Details}
+            options={{ animation: "slide_from_bottom" }}
+          />
+          <Stack.Screen
+            name="Museum"
+            children={() => (
+              <BottomTabs
+                museum={museum}
+                setTheme={setTheme}
+                theme={theme}
+                colorScheme={colorScheme}
+              />
+            )}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }

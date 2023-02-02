@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icons from "@expo/vector-icons/Ionicons";
@@ -7,7 +7,7 @@ import Home from "../screens/Home";
 import Map from "../screens/Map";
 import Profile from "../screens/Profile";
 
-const BottomTabs = ({ museum }) => {
+const BottomTabs = ({ museum, setTheme, theme, colorScheme }) => {
   const Tab = createBottomTabNavigator();
   const { height } = Dimensions.get("screen");
 
@@ -20,6 +20,10 @@ const BottomTabs = ({ museum }) => {
           width: "90%",
           height: height / 13,
           borderRadius: 20,
+          backgroundColor:
+            theme.colorScheme === "light"
+              ? theme.palette.background.main
+              : "#222",
 
           position: "absolute",
           bottom: 10,
@@ -31,7 +35,7 @@ const BottomTabs = ({ museum }) => {
     >
       <Tab.Screen
         name="Home"
-        children={() => <Home museum={museum} />}
+        children={() => <Home museum={museum} theme={theme} />}
         options={{
           tabBarIcon: (props) => (
             <Icons
@@ -57,7 +61,13 @@ const BottomTabs = ({ museum }) => {
       />
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        children={() => (
+          <Profile
+            setTheme={setTheme}
+            theme={theme}
+            colorScheme={colorScheme}
+          />
+        )}
         options={{
           tabBarIcon: (props) => (
             <Icons

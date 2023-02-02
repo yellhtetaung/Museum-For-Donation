@@ -21,11 +21,12 @@ const { width, height } = Dimensions.get("screen");
 
 const Details = ({ route }) => {
   const data = route.params.data;
+  const theme = route.params.theme;
   const navigation = useNavigation();
   const [idx, setIdx] = useState(0);
 
   return (
-    <Flex fill>
+    <Flex fill bg={theme.palette.background.main}>
       <AppBar
         title={() => (
           <Text variant="h5" style={{ fontFamily: "bold" }}>
@@ -52,7 +53,17 @@ const Details = ({ route }) => {
         }}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        <Stack style={styles.card}>
+        <Stack
+          style={[
+            styles.card,
+            {
+              backgroundColor:
+                theme.colorScheme === "light"
+                  ? theme.palette.background.main
+                  : "#222",
+            },
+          ]}
+        >
           <Image
             source={data.itemLists[idx]}
             style={{ width: "100%", height: height / 3 }}
@@ -62,6 +73,7 @@ const Details = ({ route }) => {
 
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={data.itemLists}
             keyExtractor={(item, index) => index.toString()}
             style={{ paddingVertical: 10, marginVertical: 10 }}
@@ -127,7 +139,6 @@ const Details = ({ route }) => {
 const styles = StyleSheet.create({
   card: {
     width: width / 1.1,
-    backgroundColor: "#e3e3e3",
     elevation: 3,
     borderRadius: 10,
     overflow: "hidden",

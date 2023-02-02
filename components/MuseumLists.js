@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, Image } from "react-native";
 import { Flex, Text } from "@react-native-material/core";
 
-const MuseumLists = ({ item, width }) => {
+const MuseumLists = ({ item, width, theme }) => {
   return (
     <Flex
       w={width / 1.15}
@@ -17,7 +17,10 @@ const MuseumLists = ({ item, width }) => {
           style={{
             width: "30%",
             height: "100%",
-            backgroundColor: "#e2e8f0",
+            backgroundColor:
+              theme.colorScheme === "light"
+                ? theme.palette.background.main
+                : "#333",
             elevation: 2,
             borderRadius: 10,
             overflow: "hidden",

@@ -1,5 +1,11 @@
-import React, { useState, useRef } from "react";
-import { StyleSheet, Image, Dimensions, Animated } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  StyleSheet,
+  Image,
+  Dimensions,
+  Animated,
+  useColorScheme,
+} from "react-native";
 import {
   AppBar,
   Flex,
@@ -15,22 +21,22 @@ import CusCard from "../components/CusCard";
 
 const { width, height } = Dimensions.get("screen");
 
-const ITEM_HEIGHT = height / 2.3;
+const ITEM_WIDTH = width - 45;
 const DOT_SIZE = 8;
 const DOT_SPACE = DOT_SIZE;
 
-const Home = ({ museum }) => {
+const Home = ({ museum, theme }) => {
   const [elevations, setEelevation] = useState(0);
 
   const scrollX_1 = useRef(new Animated.Value(0)).current;
   const scrollX_2 = useRef(new Animated.Value(0)).current;
 
-  const translateX_1 = Animated.divide(scrollX_1, ITEM_HEIGHT).interpolate({
+  const translateX_1 = Animated.divide(scrollX_1, ITEM_WIDTH).interpolate({
     inputRange: [0, 1],
     outputRange: [0, 24],
   });
 
-  const translateX_2 = Animated.divide(scrollX_2, ITEM_HEIGHT).interpolate({
+  const translateX_2 = Animated.divide(scrollX_2, ITEM_WIDTH).interpolate({
     inputRange: [0, 1],
     outputRange: [0, 24],
   });
@@ -41,9 +47,9 @@ const Home = ({ museum }) => {
   };
 
   return (
-    <Flex fill>
+    <Flex fill bg={theme.palette.background.main}>
       <AppBar
-        color="#FFF"
+        color="#F4F4F4"
         title={() => (
           <Text
             variant="h3"
@@ -57,7 +63,13 @@ const Home = ({ museum }) => {
         )}
         trailing={(props) => (
           <IconButton
-            style={styles.searchButton}
+            style={[
+              styles.searchButton,
+              {
+                backgroundColor:
+                  theme.colorScheme === "light" ? "#cbd5e1" : "#666",
+              },
+            ]}
             icon={(props) => (
               <Icons
                 name="qr-code-sharp"
@@ -82,7 +94,7 @@ const Home = ({ museum }) => {
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
-            snapToInterval={ITEM_HEIGHT}
+            snapToInterval={ITEM_WIDTH}
             decelerationRate={"fast"}
             pagingEnabled
             bounces={false}
@@ -98,7 +110,7 @@ const Home = ({ museum }) => {
               <Flex
                 style={{
                   width: width / 1.15,
-                  height: "100%",
+                  height: "95%",
                   borderRadius: 10,
                   overflow: "hidden",
                   marginHorizontal: 5,
@@ -119,6 +131,7 @@ const Home = ({ museum }) => {
             DOT_SPACE={DOT_SPACE}
             translateX={translateX_1}
             scrollX={scrollX_1}
+            theme={theme}
           />
         </Stack>
 
@@ -133,7 +146,7 @@ const Home = ({ museum }) => {
               horizontal
               showsHorizontalScrollIndicator={false}
               keyExtractor={(item) => item.id}
-              snapToInterval={ITEM_HEIGHT}
+              snapToInterval={ITEM_WIDTH}
               decelerationRate={"fast"}
               pagingEnabled
               bounces={false}
@@ -148,7 +161,7 @@ const Home = ({ museum }) => {
                 alignItems: "center",
               }}
               renderItem={({ item }) => (
-                <MuseumLists item={item} width={width} />
+                <MuseumLists item={item} width={width} theme={theme} />
               )}
             />
             <Pagination
@@ -157,6 +170,7 @@ const Home = ({ museum }) => {
               DOT_SPACE={DOT_SPACE}
               translateX={translateX_2}
               scrollX={scrollX_2}
+              theme={theme}
             />
           </Stack>
         </Stack>
@@ -168,7 +182,15 @@ const Home = ({ museum }) => {
           <Wrap justify="between" ph={10} pb={80}>
             {museum.map((item) => {
               return item.category.map((category) => (
-                <CusCard data={category} />
+                <CusCard
+                  data={category}
+                  theme={theme}
+                  DOT_SIZE={DOT_SIZE}
+                  DOT_SPACE={DOT_SPACE}
+                  translateX={translateX_2}
+                  scrollX={scrollX_2}
+                  ITEM_WIDTH={ITEM_WIDTH}
+                />
               ));
             })}
           </Wrap>
@@ -180,7 +202,6 @@ const Home = ({ museum }) => {
 
 const styles = StyleSheet.create({
   searchButton: {
-    backgroundColor: "#cbd5e1",
     borderRadius: 15,
   },
 });

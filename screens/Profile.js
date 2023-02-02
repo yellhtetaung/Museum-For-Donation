@@ -1,18 +1,48 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  Dimensions,
+} from "react-native";
 import {
   Flex,
   Avatar,
   Stack,
   Text,
   ListItem,
+  defaultTheme,
+  darkTheme,
+  HStack,
 } from "@react-native-material/core";
 import Icons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import PopupBox from "../components/PopupBox";
+import ChangePwdForm from "../components/ChangePwdForm";
 
-const Profile = ({ navigation }) => {
+const Profile = ({ setTheme, theme }) => {
+  const { width } = Dimensions.get("screen");
+  const navigation = useNavigation();
+  const colorScheme = useColorScheme();
+  const [themeTitle, setThemeTitle] = useState();
+  const [themeVisible, setThemeVisible] = useState(false);
+  const [pwdVisible, setPwdVisible] = useState(false);
+
+  AsyncStorage.getItem("themeCheck").then((value) => setThemeTitle(value));
+
+  const systemThemeChange = async () => {
+    await AsyncStorage.setItem("theme", "System");
+    if (colorScheme === "light") {
+      setTheme(defaultTheme);
+    } else if (colorScheme === "dark") {
+      setTheme(darkTheme);
+    }
+  };
+
   return (
-    <Flex fill>
+    <Flex fill bg={theme.palette.background.main}>
       <Stack items="center" mt={30}>
         <Avatar
           label="username"
@@ -30,20 +60,27 @@ const Profile = ({ navigation }) => {
           Username
         </Text>
       </Stack>
+
       <Stack mt={30} ph={20}>
-        <Stack radius={20} overflow="hidden" style={{ elevation: 1 }}>
+        <Stack radius={10} overflow="hidden" style={{ elevation: 2 }}>
           <ListItem
-            title="Dark mode"
+            title="Dark Mode"
             trailing={(props) => (
-              <MaterialIcons
-                name="chevron-right"
-                size={props.size}
-                color={props.color}
-              />
+              <HStack w={width / 4} me={40}>
+                <Text style={{ width: "60%", textAlign: "right" }}>
+                  {themeTitle}
+                </Text>
+                <MaterialIcons
+                  name="chevron-right"
+                  size={props.size}
+                  color={props.color}
+                />
+              </HStack>
             )}
+            onPress={() => setThemeVisible(true)}
           />
           <ListItem
-            title="Change password"
+            title="Change Password"
             trailing={(props) => (
               <MaterialIcons
                 name="chevron-right"
@@ -51,6 +88,7 @@ const Profile = ({ navigation }) => {
                 color={props.color}
               />
             )}
+            onPress={() => setPwdVisible(true)}
           />
           <ListItem
             title="Language"
@@ -63,6 +101,16 @@ const Profile = ({ navigation }) => {
             )}
           />
         </Stack>
+
+        <PopupBox
+          visible={themeVisible}
+          setVisible={setThemeVisible}
+          systemThemeChange={systemThemeChange}
+          colorScheme={colorScheme}
+          setTheme={setTheme}
+        />
+
+        <ChangePwdForm visible={pwdVisible} setVisible={setPwdVisible} />
 
         <Stack items="center" mt={30}>
           <TouchableOpacity
