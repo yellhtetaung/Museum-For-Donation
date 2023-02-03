@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogHeader,
@@ -16,11 +16,11 @@ const ChangePwdForm = ({ visible, setVisible }) => {
   const [newPassword, setNewPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
   const [acceptPassword, setAcceptPassword] = useState(false);
-
   const [oldPwdIcon, setOldPwdIcon] = useState({
     show: true,
     icon: "eye-off-outline",
   });
+
   const [newPwdIcon, setNewPwdIcon] = useState({
     show: true,
     icon: "eye-off-outline",
@@ -31,24 +31,33 @@ const ChangePwdForm = ({ visible, setVisible }) => {
       newPassword === undefined ||
       confirmPassword === undefined ||
       newPassword.length < 5 ||
-      confirmPassword.length < 5
+      confirmPassword.length < 5 ||
+      newPassword.length != confirmPassword.length ||
+      newPassword !== confirmPassword
     ) {
       setAcceptPassword(true);
     } else if (
       newPassword.length >= 5 &&
       confirmPassword.length >= 5 &&
+      newPassword.length === confirmPassword.length &&
       newPassword === confirmPassword
     ) {
       setAcceptPassword(false);
     }
   }, [newPassword, confirmPassword, acceptPassword]);
 
-  const changePassword = () => {
-    setPassword(confirmPassword);
+  const cancelPassword = () => {
     setVisible(false);
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
+    setOldPwdIcon({ show: true, icon: "eye-off-outline" });
+    setNewPwdIcon({ show: true, icon: "eye-off-outline" });
+  };
+
+  const changePassword = () => {
+    setPassword(confirmPassword);
+    cancelPassword();
   };
 
   return (
@@ -115,7 +124,7 @@ const ChangePwdForm = ({ visible, setVisible }) => {
           title="Cancel"
           variant="text"
           compact
-          onPress={() => setVisible(false)}
+          onPress={cancelPassword}
         />
         <Button
           title="Ok"

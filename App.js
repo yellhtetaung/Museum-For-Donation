@@ -1,11 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import {
-  darkTheme,
-  defaultTheme,
-  Provider,
-  ThemeProvider,
-} from "@react-native-material/core";
+import { darkTheme, defaultTheme, Provider } from "@react-native-material/core";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
@@ -19,9 +14,7 @@ import Details from "./screens/Details";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
-
   const [museum, setMuseum] = useState([...data]);
-
   const [theme, setTheme] = useState();
   const colorScheme = useColorScheme();
 
@@ -33,6 +26,11 @@ export default function App() {
     AsyncStorage.getItem("theme").then(async (value) => {
       if (value === null) {
         setColor();
+        if (colorScheme === "light") {
+          setTheme(defaultTheme);
+        } else if (colorScheme === "dark") {
+          setTheme(darkTheme);
+        }
       }
       if (value === "System") {
         await AsyncStorage.setItem("themeCheck", "System");
@@ -47,7 +45,7 @@ export default function App() {
         setTheme(darkTheme);
       }
     });
-  }, [colorScheme]);
+  }, [colorScheme, theme, setColor]);
 
   const [fontsLoaded] = useFonts({
     medium: require("./assets/fonts/RobotoSlab-Medium.ttf"),

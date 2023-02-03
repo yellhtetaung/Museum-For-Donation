@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Flex, Text } from "@react-native-material/core";
-import AysncStorage from "@react-native-async-storage/async-storage";
 
 const GetStarted = () => {
   const navigation = useNavigation();

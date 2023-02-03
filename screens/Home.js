@@ -1,11 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  StyleSheet,
-  Image,
-  Dimensions,
-  Animated,
-  useColorScheme,
-} from "react-native";
+import React, { useState, useRef } from "react";
+import { StyleSheet, Image, Dimensions, Animated } from "react-native";
 import {
   AppBar,
   Flex,

@@ -33,7 +33,7 @@ const PopupBox = ({ visible, setVisible, systemThemeChange, setTheme }) => {
         setDarkCheck("ellipse-outline");
       }
     });
-  });
+  }, [systemCheck, darkCheck, lightCheck]);
 
   return (
     <Dialog visible={visible} onDismiss={() => setVisible(false)}>
