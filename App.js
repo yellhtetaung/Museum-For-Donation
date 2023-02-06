@@ -9,6 +9,8 @@ import { data } from "./data";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import GetStarted from "./screens/GetStarted";
+import LoginForm from "./screens/LoginForm";
+import SignUpForm from "./screens/SignUpForm";
 import BottomTabs from "./components/BottomTabs";
 import Details from "./screens/Details";
 
@@ -77,6 +79,16 @@ export default function App() {
             name="GetStarted"
             component={GetStarted}
             options={{ animation: "fade" }}
+          />
+          <Stack.Screen
+            name="Login"
+            children={() => <LoginForm theme={theme} />}
+            options={{ animation: "slide_from_right" }}
+          />
+          <Stack.Screen
+            name="Signup"
+            children={() => <SignUpForm theme={theme} />}
+            options={{ animation: "slide_from_right" }}
           />
           <Stack.Screen
             name="Details"
