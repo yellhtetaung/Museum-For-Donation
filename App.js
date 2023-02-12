@@ -9,6 +9,7 @@ import { data } from "./data";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import GetStarted from "./screens/GetStarted";
+import GoHome from "./screens/GoHome";
 import LoginForm from "./screens/LoginForm";
 import SignUpForm from "./screens/SignUpForm";
 import BottomTabs from "./components/BottomTabs";
@@ -19,9 +20,11 @@ export default function App() {
   const [museum, setMuseum] = useState([...data]);
   const [theme, setTheme] = useState();
   const colorScheme = useColorScheme();
+  const [intRoute, setIntRoute] = useState("GetStarted");
 
   const setColor = async () => {
     await AsyncStorage.setItem("theme", "System");
+    await AsyncStorage.setItem("loggined", "false");
   };
 
   useEffect(() => {
@@ -47,7 +50,17 @@ export default function App() {
         setTheme(darkTheme);
       }
     });
-  }, [colorScheme, theme, setColor]);
+
+    AsyncStorage.getItem("loggined").then((value) => {
+      if (value === null) {
+        AsyncStorage.setItem("loggined", "false");
+      } else if (value === "true") {
+        setIntRoute("GoHome");
+      } else if (value === "false") {
+        setIntRoute("GetStarted");
+      }
+    });
+  }, [colorScheme, theme, setColor, intRoute]);
 
   const [fontsLoaded] = useFonts({
     medium: require("./assets/fonts/RobotoSlab-Medium.ttf"),
@@ -72,7 +85,7 @@ export default function App() {
     <Provider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="GetStarted"
+          initialRouteName={intRoute}
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen
@@ -80,6 +93,7 @@ export default function App() {
             component={GetStarted}
             options={{ animation: "fade" }}
           />
+          <Stack.Screen name="GoHome" component={GoHome} />
           <Stack.Screen
             name="Login"
             children={() => <LoginForm theme={theme} />}

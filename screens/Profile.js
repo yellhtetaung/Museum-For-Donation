@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -29,8 +29,13 @@ const Profile = ({ setTheme, theme }) => {
   const [themeTitle, setThemeTitle] = useState();
   const [themeVisible, setThemeVisible] = useState(false);
   const [pwdVisible, setPwdVisible] = useState(false);
+  const [username, setUsername] = useState("");
 
   AsyncStorage.getItem("themeCheck").then((value) => setThemeTitle(value));
+
+  useEffect(() => {
+    AsyncStorage.getItem("username").then((value) => setUsername(value));
+  }, [setThemeTitle, username]);
 
   const systemThemeChange = async () => {
     await AsyncStorage.setItem("theme", "System");
@@ -45,11 +50,10 @@ const Profile = ({ setTheme, theme }) => {
     <Flex fill bg={theme.palette.background.main}>
       <Stack items="center" mt={30}>
         <Avatar
-          label="username"
+          label={username}
           icon={(props) => (
             <Icons name="person" size={props.size} color={props.color} />
           )}
-          image={require("../assets/dev-ed-wave.png")}
           size={120}
           style={{ elevation: 10 }}
         />
@@ -57,7 +61,7 @@ const Profile = ({ setTheme, theme }) => {
           variant="h5"
           style={{ textAlign: "center", fontFamily: "bold", marginTop: 10 }}
         >
-          Username
+          {username}
         </Text>
       </Stack>
 
@@ -115,7 +119,10 @@ const Profile = ({ setTheme, theme }) => {
         <Stack items="center" mt={30}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("GetStarted")}
+            onPress={() => {
+              AsyncStorage.removeItem("loggined");
+              navigation.replace("GetStarted");
+            }}
           >
             <Text
               variant="button"

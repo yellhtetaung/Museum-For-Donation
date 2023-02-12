@@ -61,7 +61,7 @@ const GetStarted = () => {
                 marginVertical: 30,
               },
             ]}
-            onPress={() => navigation.navigate("Signup")}
+            onPress={() => navigation.replace("Login")}
           >
             <Icons
               name="mail-outline"
@@ -78,18 +78,19 @@ const GetStarted = () => {
                 textAlign: "center",
               }}
             >
-              signup with email
+              Login with email
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate("Museum")}
+            onPress={() => navigation.replace("Museum")}
             style={[
               styles.button,
               {
                 flexDirection: "row",
                 backgroundColor: "#e11d48",
                 marginVertical: 30,
+                display: "flex",
               },
             ]}
           >
